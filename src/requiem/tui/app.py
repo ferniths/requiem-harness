@@ -97,6 +97,7 @@ class RequiemApp(App[None]):
 
     BINDINGS = [
         Binding("ctrl+p", "command_palette", "Commands"),
+        Binding("ctrl+m", "menu_launcher", "Menus"),
         Binding("ctrl+q", "quit", "Quit"),
         Binding("ctrl+c", "cancel_operation", "Cancel"),
         Binding("ctrl+enter", "submit_message", "Send"),
@@ -426,6 +427,34 @@ class RequiemApp(App[None]):
     def action_command_palette(self) -> None:
         from requiem.tui.widgets.command_palette import CommandPalette
         self.push_screen(CommandPalette())
+
+    def action_menu_launcher(self) -> None:
+        """Open the menu-kit launcher modal (Ctrl+M)."""
+        from requiem.tui.menus import MenuCommand, MenuRegistry, ModalMenuScreen
+        from requiem.tui.widgets.command_palette import CommandPalette
+
+        registry = MenuRegistry()
+        commands: list[MenuCommand] = []
+        for label, action_name, _kw, desc in CommandPalette._COMMANDS:
+            handler = getattr(self, f"action_{action_name}", None)
+            commands.append(
+                MenuCommand(
+                    id=action_name,
+                    label=label,
+                    hint=desc,
+                    category="",
+                    enabled=handler is not None,
+                    icon="•",
+                    action=f"action_{action_name}",
+                ),
+            )
+        self.push_screen(ModalMenuScreen(commands=commands, registry=registry, title="REQUIEM"))
+        # The screen's on_selected calls registry.resolve(action) which is the
+        # same dispatch path as the palette. Bind handlers at open time.
+        for cmd in commands:
+            handler = getattr(self, str(cmd.action), None)
+            if handler is not None:
+                registry.register(cmd.id, handler, cmd.label)
 
     def action_quit(self) -> None:  # type: ignore[override]
         self.exit()
