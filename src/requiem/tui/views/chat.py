@@ -155,9 +155,9 @@ class ChatView(Vertical):
         self._update_status("ready")
 
     def _build_request(self, conversation: list[dict[str, str]], model: str) -> Any:
-        from requiem.providers.models import ChatMessage, ProviderRequest
-
         from typing import cast
+
+        from requiem.providers.models import ChatMessage, ProviderRequest
 
         messages: list[ChatMessage] = []
         for m in conversation:
@@ -227,10 +227,10 @@ class ChatView(Vertical):
     def _render_empty_state(self) -> None:
         """Show the welcome / no-provider empty state."""
         empty: Any = self.query_one("#req-chat-empty")
-        p: Any = getattr(self.app, "_theme_mgr", None)
-        accent = p.primary_accent if p else "#C02645"
-        gold = p.secondary_accent if p else "#D4AF72"
-        muted = p.muted_ash if p else "#82777D"
+        palette = getattr(getattr(self.app, "_theme_mgr", None), "palette", None)
+        accent = palette.primary_accent if palette else "#C02645"
+        gold = palette.secondary_accent if palette else "#D4AF72"
+        muted = palette.muted_ash if palette else "#82777D"
 
         lines: list[Text] = [
             Text("R E Q U I E M", style=f"bold {gold}"),

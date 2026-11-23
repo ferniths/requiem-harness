@@ -122,6 +122,7 @@ class RequiemApp(App[None]):
         self._views: dict[str, Any] = {}
         self._active_provider: Any = None
         self._active_model: str = ""
+        self._active_api_key: str | None = None
         self._chat_view: Any = None
         self._register_requiem_themes()
 
@@ -165,14 +166,21 @@ class RequiemApp(App[None]):
     # ── Provider resolution ────────────────────────────────────────────────
 
     def _resolve_api_key(self) -> str | None:
-        """Resolve the active provider's API key from the credential vault."""
+        """Return the active provider's API key, resolved by config ID.
+
+        The key is captured when the provider is loaded in
+        _load_active_provider, where the correct config ID is available.
+        Fallback to env-var lookup if the provider was loaded without a key.
+        """
         if self._active_provider is None:
             return None
-        from requiem.security.credentials import CredentialVault
-        vault = CredentialVault()
-        # Use provider ID if available, else name
-        pid = getattr(self._active_provider, "name", "unknown")
-        return vault.retrieve(pid)
+        if self._active_api_key is not None:
+            return self._active_api_key
+        # Fallback: try to retrieve via the provider's config id if it's set
+        config_id = getattr(self._active_provider, "config_id", None)
+        if config_id:
+            return self._resolve_api_key_for_config(config_id)
+        return None
 
     def _load_active_provider(self) -> None:
         """Load the default provider from config and create the provider instance."""
@@ -207,6 +215,7 @@ class RequiemApp(App[None]):
                 target, api_key=api_key,
             )
             self._active_model = target.default_model or target.credentials.model or ""
+            self._active_api_key = api_key
         except Exception:
             logger.debug("Failed to load provider %s", target.id, exc_info=True)
 

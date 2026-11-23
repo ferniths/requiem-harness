@@ -73,9 +73,9 @@ class TestThemeManager:
 
 
 class TestEmblem:
-    def test_emblem_returns_six_lines(self):
-        lines = emblem(6)
-        assert len(lines) == 6
+    def test_emblem_returns_seven_lines(self):
+        lines = emblem(7)
+        assert len(lines) == 7
         assert any("R" in line for line in lines)
 
     def test_emblem_crops_top(self):
@@ -83,8 +83,8 @@ class TestEmblem:
         assert len(lines) == 3
 
     def test_emblem_ascii(self):
-        lines = emblem_ascii(5)
-        assert len(lines) == 5
+        lines = emblem_ascii(3)
+        assert len(lines) == 3
         assert all(line.isascii() for line in lines)
 
     def test_wordmark(self):

@@ -9,10 +9,10 @@ from __future__ import annotations
 import logging
 from typing import Any, cast
 
-from textual.app import ComposeResult
 import textual.events
-from textual.message import Message
+from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
+from textual.message import Message
 from textual.reactive import reactive
 from textual.widgets import Static
 
@@ -190,14 +190,14 @@ class ProvidersView(Vertical):
             )
             try:
                 ok, msg = await provider.validate_connection(api_key=key, model=prov["model"] or None)
-                self.post_message(_ProviderTestMsg(provider_id, ok, msg))
+                self.post_message(ProviderTestResult(provider_id, ok, msg))
             except Exception as e:
-                self.post_message(_ProviderTestMsg(provider_id, False, str(e)))
+                self.post_message(ProviderTestResult(provider_id, False, str(e)))
 
         workers: Any = self.app.workers
         workers.run_worker(_run)
 
-    def on_provider_test_result(self, msg: _ProviderTestMsg) -> None:
+    def on_provider_test_result(self, msg: ProviderTestResult) -> None:
         """Handle connection test result."""
         detail: Any = self.query_one("#req-providers-detail")
         status_cls = "req-status-connected" if msg.ok else "req-status-error"
@@ -205,9 +205,8 @@ class ProvidersView(Vertical):
         detail.mount(Static(f"{label}: {msg.detail}", classes=status_cls))
 
 
-class _ProviderTestMsg(Message):
+class ProviderTestResult(Message):
     """Message carrying a connection test result."""
-    NAME = "provider_test_result"
 
     def __init__(self, provider_id: str, ok: bool, detail: str) -> None:
         self.provider_id = provider_id

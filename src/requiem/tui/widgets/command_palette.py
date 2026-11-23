@@ -7,6 +7,7 @@ Arrow keys move the selection cursor; Enter executes the selected command.
 from __future__ import annotations
 
 from typing import Any
+
 from textual.app import ComposeResult
 from textual.containers import Vertical, VerticalScroll
 from textual.screen import ModalScreen

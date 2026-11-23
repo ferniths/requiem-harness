@@ -11,8 +11,8 @@ from typing import Any
 
 import textual
 import textual.events
-from textual.containers import Vertical
 from textual.app import ComposeResult
+from textual.containers import Vertical
 from textual.widgets import Label, Static
 
 logger = logging.getLogger("requiem.tui.views.themes")

@@ -35,7 +35,7 @@ class OnboardingScreen(ModalScreen[bool]):
 
     CSS = """
     OnboardingScreen {
-        background: $background;
+        background: $requiem-bg-recessed;
     }
     #onboarding {
         width: 1fr;
@@ -43,7 +43,7 @@ class OnboardingScreen(ModalScreen[bool]):
         padding: 2;
     }
     .ob-title {
-        color: $requiem-accent-secondary;
+        color: $requiem-accent-alt;
         text-style: bold;
         width: 100%;
     }
@@ -52,12 +52,12 @@ class OnboardingScreen(ModalScreen[bool]):
         width: 100%;
     }
     .ob-hint {
-        color: $requiem-text-secondary;
+        color: $requiem-text-muted;
         width: 100%;
     }
     .ob-step {
         border: solid #2A242D;
-        background: $surface;
+        background: $requiem-bg-elevated;
         padding: 1 2;
         width: 100%;
         margin-bottom: 1;
