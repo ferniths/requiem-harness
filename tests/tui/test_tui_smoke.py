@@ -176,3 +176,41 @@ async def test_first_run_launches_onboarding(monkeypatch):
         assert len(app.screen_stack) > 1
         from requiem.tui.screens.onboarding import OnboardingScreen
         assert isinstance(app.screen_stack[-1], OnboardingScreen)
+
+
+@pytest.mark.asyncio
+async def test_onboarding_arrow_navigation():
+    """Up/down arrow keys move the selection on the theme and provider steps.
+
+    Regression: the onboarding screen instructed the user to use up/down
+    arrows but had no bindings, so selection never moved.
+    """
+    from requiem.tui.app import RequiemApp
+    from requiem.tui.screens.onboarding import OnboardingScreen
+
+    app = RequiemApp()
+    async with app.run_test() as pilot:
+        ob = OnboardingScreen()
+        app.push_screen(ob)
+        await pilot.pause()
+
+        # Theme step: down moves to the next theme, up moves back
+        ob._step = 1
+        ob._render_step()
+        await pilot.pause()
+        start = ob._theme_choice
+        await pilot.press("down")
+        await pilot.pause()
+        assert ob._theme_choice != start
+        await pilot.press("up")
+        await pilot.pause()
+        assert ob._theme_choice == start
+
+        # Provider step: down cycles through provider kinds
+        ob._step = 2
+        ob._render_step()
+        await pilot.pause()
+        pstart = ob._provider_choice
+        await pilot.press("down")
+        await pilot.pause()
+        assert ob._provider_choice != pstart

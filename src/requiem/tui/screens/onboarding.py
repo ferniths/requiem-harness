@@ -67,8 +67,9 @@ class OnboardingScreen(ModalScreen[bool]):
     BINDINGS = [
         Binding("escape", "skip", "Skip"),
         Binding("enter", "next", "Next"),
+        Binding("up", "up", "Up", show=False),
+        Binding("down", "down", "Down", show=False),
     ]
-
     # Provider kinds and their descriptions
     PROVIDER_INFO: list[tuple[str, str, str]] = [
         ("openai", "OpenAI / ChatGPT", "Requires OPENAI_API_KEY or a key entered here. Uses api.openai.com."),
@@ -210,6 +211,32 @@ class OnboardingScreen(ModalScreen[bool]):
         box.mount(Static("Press Enter to save and launch REQUIEM. Esc to skip.", classes="ob-hint"))
 
     # -- Navigation -----------------------------------------------------------
+
+    def action_up(self) -> None:
+        """Move the selection up on list steps (theme / provider)."""
+        if self._step == 1:
+            names = list_theme_names()
+            idx = names.index(self._theme_choice) if self._theme_choice in names else 0
+            self._theme_choice = names[(idx - 1) % len(names)]
+            self._render_step()
+        elif self._step == 2:
+            kinds = [k for k, _, _ in self.PROVIDER_INFO]
+            idx = kinds.index(self._provider_choice) if self._provider_choice in kinds else 0
+            self._provider_choice = kinds[(idx - 1) % len(kinds)]
+            self._render_step()
+
+    def action_down(self) -> None:
+        """Move the selection down on list steps (theme / provider)."""
+        if self._step == 1:
+            names = list_theme_names()
+            idx = names.index(self._theme_choice) if self._theme_choice in names else 0
+            self._theme_choice = names[(idx + 1) % len(names)]
+            self._render_step()
+        elif self._step == 2:
+            kinds = [k for k, _, _ in self.PROVIDER_INFO]
+            idx = kinds.index(self._provider_choice) if self._provider_choice in kinds else 0
+            self._provider_choice = kinds[(idx + 1) % len(kinds)]
+            self._render_step()
 
     def action_next(self) -> None:
         """Advance to the next step."""
