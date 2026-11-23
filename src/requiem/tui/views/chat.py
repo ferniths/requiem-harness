@@ -265,7 +265,7 @@ class ChatView(Vertical):
             app.action_submit_message()
 
     def _scroll_to_bottom(self) -> None:
-        self._history().scroll_to_bottom()
+        self._history().scroll_end()
 
     def _scroll_to_bottom_if_following(self) -> None:
         """Auto-scroll only if the user is already near the bottom."""

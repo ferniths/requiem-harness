@@ -112,7 +112,7 @@ class LogsView(Vertical):
             return
         for line in lines:
             content.mount(Static(line, classes="req-log-row"))
-        content.scroll_to_bottom()  # type: ignore[attr-defined]
+        content.scroll_end()
 
     def on_input_changed(self, event: Input.Changed) -> None:
         if event.input.id == "req-logs-search":
