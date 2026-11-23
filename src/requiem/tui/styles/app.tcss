@@ -1,0 +1,55 @@
+# REQUIEM TUI — Theme-aware styles
+#
+# CSS variables are set at runtime by RequiemApp._apply_theme_css().
+# Each theme updates these variables; no hardcoded hex values here.
+
+Screen {
+    background: $requiem-bg;
+    color: $requiem-text;
+}
+
+Header {
+    background: $requiem-bg-recessed;
+    border-bottom: thin $requiem-border;
+}
+
+Footer {
+    background: $requiem-bg-recessed;
+    border-top: thin $requiem-border;
+}
+
+#main-area {
+    height: 1fr;
+    background: $requiem-bg;
+}
+
+#chat-log {
+    height: 1fr;
+    padding: 1 2;
+}
+
+.msg-user {
+    color: $requiem-text;
+    padding-left: 4;
+    width: 100%;
+}
+
+.msg-assistant {
+    color: $requiem-text;
+    padding-left: 4;
+    width: 100%;
+}
+
+.msg-system {
+    color: $requiem-text-secondary;
+    style: italic;
+    padding-left: 4;
+    width: 100%;
+}
+
+#chat-input {
+    height: 2;
+    margin: 0 2 1 2;
+    border: thin $requiem-border;
+    background: $requiem-bg-recessed;
+}
